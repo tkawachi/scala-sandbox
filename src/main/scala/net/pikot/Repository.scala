@@ -72,6 +72,8 @@ class FooRepositoryOnMemory(map: mutable.Map[Long, FooEntity]) extends FooReposi
       case ResolveByName(name) => map.values.find(_.name == name)
     }
   }
+
+  def fooInterpreter = or(dslInterpreter, fooDslInterpreter)
 }
 
 object RepositoryMain {
@@ -90,7 +92,7 @@ object RepositoryMain {
     type App[A] = Coproduct[repo.RepositoryDSL, repo.FooRepositoryDSL, A]
     val app = prg[App]
 
-    val result = Free.runFC(app)(repo.or(repo.dslInterpreter, repo.fooDslInterpreter))
+    val result = Free.runFC(app)(repo.fooInterpreter)
     println(result)
   }
 }
